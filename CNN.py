@@ -3,7 +3,7 @@ import csv
 from tensorflow import keras
 import pandas as pd
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, InputLayer
+from tensorflow.keras.layers import Dense, InputLayer, Conv2D, MaxPooling2D
 from tensorflow.keras.utils import to_categorical
 
 
@@ -18,28 +18,23 @@ training_labels.replace(('b', 's'), (0, 1), inplace=True)
 
 # select input features
 training_data = training.copy().drop(columns=["EventId", "Weight", "Label"])
-test_data = test.copy().drop(columns=["EventId"])
 selected_inputs = []
-for value in training_data.columns.values.tolist():
-  if "DER" in value:
-    selected_inputs.append(value)
-  # selected_inputs.append(value)
+# for value in training_data.columns.values.tolist():
+#   # if "PRI" in value:
+#   #   selected_inputs.append(value)
+#   selected_inputs.append(value)
 print(selected_inputs)
-training_data = training_data[selected_inputs]
-test_data = test_data[selected_inputs]
+# training_data = training_data[selected_inputs]
+# test_data = test.copy()[selected_inputs]
 
 print(training_data.shape)
 
 # Build the model
 model = Sequential([
-  InputLayer(input_shape=(training_data.shape[1],)),
-  Dense(64, activation='relu'),
-  Dense(64, activation='relu'),
-  Dense(64, activation='relu'),
-  Dense(64, activation='relu'),
-  Dense(64, activation='relu'),
-  Dense(64, activation='relu'),
-  Dense(1, activation='relu'),
+  InputLayer(input_shape=(training_data.shape[1], training_data.shape[0], 1, )),
+  Conv2D(32, (10, 10), activation="relu"),
+  MaxPooling2D((4, 4)),
+  Dense(2, activation='relu'),
 ])
 
 # Compile the model.
