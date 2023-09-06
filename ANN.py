@@ -19,14 +19,14 @@ training_labels.replace(('b', 's'), (0, 1), inplace=True)
 # select input features
 training_data = training.copy().drop(columns=["EventId", "Weight", "Label"])
 test_data = test.copy().drop(columns=["EventId"])
-selected_inputs = []
-for value in training_data.columns.values.tolist():
-  if "DER" in value:
-    selected_inputs.append(value)
-  # selected_inputs.append(value)
-print(selected_inputs)
-training_data = training_data[selected_inputs]
-test_data = test_data[selected_inputs]
+# selected_inputs = []
+# for value in training_data.columns.values.tolist():
+#   if "PRI" in value:
+#     selected_inputs.append(value)
+#   # selected_inputs.append(value)
+# print(selected_inputs)
+# training_data = training_data[selected_inputs]
+# test_data = test_data[selected_inputs]
 
 print(training_data.shape)
 
@@ -39,20 +39,20 @@ model = Sequential([
   Dense(64, activation='relu'),
   Dense(64, activation='relu'),
   Dense(64, activation='relu'),
-  Dense(1, activation='relu'),
+  Dense(2, activation='sigmoid'),
 ])
 
 # Compile the model.
 model.compile(
-  optimizer='sgd',
-  loss='mse',
+  optimizer='adam',
+  loss='binary_crossentropy',
   metrics=['accuracy'],
 )
 
 # Train the model.
 model.fit(
   training_data,
-  training_labels,
+  to_categorical(training_labels),
   epochs=5,
   batch_size=32,
 )
