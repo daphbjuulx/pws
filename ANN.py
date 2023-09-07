@@ -23,7 +23,6 @@ test_data = test.copy().drop(columns=["EventId"])
 # for value in training_data.columns.values.tolist():
 #   if "PRI" in value:
 #     selected_inputs.append(value)
-#   # selected_inputs.append(value)
 # print(selected_inputs)
 # training_data = training_data[selected_inputs]
 # test_data = test_data[selected_inputs]
@@ -39,7 +38,7 @@ model = Sequential([
   Dense(64, activation='relu'),
   Dense(64, activation='relu'),
   Dense(64, activation='relu'),
-  Dense(2, activation='sigmoid'),
+  Dense(2, activation='softmax'),
 ])
 
 # Compile the model.
@@ -57,4 +56,24 @@ model.fit(
   batch_size=32,
 )
 
-model.save_weights('weights.h5')
+# model.save_weights('weights.h5')
+
+# make predictions for test set
+# predictions = model.predict(test_data)
+#
+# # format predictions
+# output = []
+# for pred in predictions:
+#   if pred[0] > pred[1]:
+#     output.append("b")
+#   else:
+#     output.append("s")
+#
+#
+# print(predictions[:5])
+# print(output[:5])
+
+
+
+#print(np.argmax(predictions, axis=1))
+# print(pd.Series.argmax(predictions, axis = 1))
