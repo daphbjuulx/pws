@@ -3,9 +3,15 @@ import csv
 from tensorflow import keras
 import pandas as pd
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, InputLayer
+from tensorflow.keras.layers import Dense, InputLayer, Normalization
 from tensorflow.keras.utils import to_categorical
+# from scikeras.wrappers.scikit_learn import KerasClassifier
+# from tensorflow.keras.layers.wrappers.scikit_learn import KerasClassifier
+from sklearn.model_selection import StratifiedKFold
+from sklearn.model_selection import cross_val_score
 
+# seed = 7
+# np.random.seed(seed)
 
 training = pd.read_csv('training.csv')
 test = pd.read_csv('test.csv')
@@ -27,11 +33,14 @@ test_data = test.copy().drop(columns=["EventId"])
 # training_data = training_data[selected_inputs]
 # test_data = test_data[selected_inputs]
 
+training_data.replace(-999, 0, inplace=True)
+
 print(training_data.shape)
 
 # Build the model
 model = Sequential([
   InputLayer(input_shape=(training_data.shape[1],)),
+  Normalization(),
   Dense(64, activation='relu'),
   Dense(64, activation='relu'),
   Dense(64, activation='relu'),
@@ -52,9 +61,11 @@ model.compile(
 model.fit(
   training_data,
   to_categorical(training_labels),
-  epochs=5,
+  epochs=10,
   batch_size=32,
 )
+# kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=seed)
+# results = cross_val_score(model, training_data, training_labels, cv=kfold)
 
 # model.save_weights('weights.h5')
 
