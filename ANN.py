@@ -5,19 +5,21 @@ import pandas as pd
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, InputLayer, Normalization
 from tensorflow.keras.utils import to_categorical
+from scikeras.wrappers import KerasClassifier
 # from scikeras.wrappers.scikit_learn import KerasClassifier
 # from tensorflow.keras.layers.wrappers.scikit_learn import KerasClassifier
 from sklearn.model_selection import StratifiedKFold
 from sklearn.model_selection import cross_val_score
 
-# seed = 7
-# np.random.seed(seed)
+seed = 7
+np.random.seed(seed)
 
 training = pd.read_csv('training.csv')
 test = pd.read_csv('test.csv')
 
 training_labels = training.copy()[["Label"]]
 training_labels.replace(('b', 's'), (0, 1), inplace=True)
+
 
 # print(training_labels)
 # print(training)
@@ -33,7 +35,12 @@ test_data = test.copy().drop(columns=["EventId"])
 # training_data = training_data[selected_inputs]
 # test_data = test_data[selected_inputs]
 
-training_data.replace(-999, 0, inplace=True)
+
+training_data.replace(-999, np.NAN, inplace=True)
+mean = training_data.mean()
+print(mean)
+training_data.fillna(mean, inplace=True)
+print(training_data["DER_deltaeta_jet_jet"])
 
 print(training_data.shape)
 
@@ -64,8 +71,8 @@ model.fit(
   epochs=10,
   batch_size=32,
 )
-# kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=seed)
-# results = cross_val_score(model, training_data, training_labels, cv=kfold)
+kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=seed)
+results = cross_val_score(model, training_data, training_labels, cv=kfold)
 
 # model.save_weights('weights.h5')
 
