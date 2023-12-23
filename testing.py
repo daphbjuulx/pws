@@ -86,19 +86,7 @@ def create_model():
   )
   return model
 
-# model = Sequential([
-#   InputLayer(input_shape=(training_data.shape[1],)),
-#   Normalization(),
-#   Dense(64, activation='relu'),
-#   Dense(64, activation='relu'),
-#   Dense(64, activation='relu'),
-#   Dense(64, activation='relu'),
-#   Dense(64, activation='relu'),
-#   Dense(64, activation='relu'),
-#   Dense(2, activation='softmax'),
-# ])
-
-model = KerasClassifier(model=create_model, epochs=10, batch_size=64, verbose=0)
+model = KerasClassifier(model=create_model, epochs=10, batch_size=64, verbose=1)
 
 # history = model.fit
 
@@ -121,7 +109,7 @@ model = KerasClassifier(model=create_model, epochs=10, batch_size=64, verbose=0)
 #)
 
 
-kfold = KFold(n_splits=10, shuffle=True, random_state=seed)
+kfold = KFold(n_splits=5, shuffle=True, random_state=seed)
 # results = cross_val_score(model, training_data, y=to_categorical(training_labels), cv=kfold)
 # print(results, results.mean())
 results = cross_val_predict(model, training_data, y=to_categorical(training_labels), cv=kfold)
