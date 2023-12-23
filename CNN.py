@@ -1,6 +1,3 @@
-import numpy as np
-import csv
-from tensorflow import keras
 import pandas as pd
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, InputLayer, Conv1D, MaxPooling1D, Flatten
