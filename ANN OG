@@ -1,0 +1,90 @@
+import numpy as np
+import csv
+from tensorflow import keras
+import pandas as pd
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, InputLayer, Normalization
+from tensorflow.keras.utils import to_categorical
+# from scikeras.wrappers.scikit_learn import KerasClassifier
+# from tensorflow.keras.layers.wrappers.scikit_learn import KerasClassifier
+from sklearn.model_selection import StratifiedKFold
+from sklearn.model_selection import cross_val_score
+
+# seed = 7
+# np.random.seed(seed)
+
+training = pd.read_csv('training.csv')
+test = pd.read_csv('test.csv')
+
+training_labels = training.copy()[["Label"]]
+training_labels.replace(('b', 's'), (0, 1), inplace=True)
+
+# print(training_labels)
+# print(training)
+
+# select input features
+training_data = training.copy().drop(columns=["EventId", "Weight", "Label"])
+test_data = test.copy().drop(columns=["EventId"])
+# selected_inputs = []
+# for value in training_data.columns.values.tolist():
+#   if "PRI" in value:
+#     selected_inputs.append(value)
+# print(selected_inputs)
+# training_data = training_data[selected_inputs]
+# test_data = test_data[selected_inputs]
+
+training_data.replace(-999, 0, inplace=True)
+
+print(training_data.shape)
+
+# Build the model
+model = Sequential([
+  InputLayer(input_shape=(training_data.shape[1],)),
+  Normalization(),
+  Dense(64, activation='relu'),
+  Dense(64, activation='relu'),
+  Dense(64, activation='relu'),
+  Dense(64, activation='relu'),
+  Dense(64, activation='relu'),
+  Dense(64, activation='relu'),
+  Dense(2, activation='softmax'),
+])
+
+# Compile the model.
+model.compile(
+  optimizer='adam',
+  loss='binary_crossentropy',
+  metrics=['accuracy'],
+)
+
+# Train the model.
+model.fit(
+  training_data,
+  to_categorical(training_labels),
+  epochs=10,
+  batch_size=32
+)
+# kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=seed)
+# results = cross_val_score(model, training_data, training_labels, cv=kfold)
+
+# model.save_weights('weights.h5')
+
+# make predictions for test set
+# predictions = model.predict(test_data)
+#
+# # format predictions
+# output = []
+# for pred in predictions:
+#   if pred[0] > pred[1]:
+#     output.append("b")
+#   else:
+#     output.append("s")
+#
+#
+# print(predictions[:5])
+# print(output[:5])
+
+
+
+#print(np.argmax(predictions, axis=1))
+# print(pd.Series.argmax(predictions, axis = 1))
