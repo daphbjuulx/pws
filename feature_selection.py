@@ -61,5 +61,6 @@ sfs = SFS(SGDClassifier(),
 sfs.fit(training_data, training_labels)
 print(sfs.k_feature_names_)
 
+# 'DER_mass_transverse_met_lep', 'DER_prodeta_jet_jet', 'DER_pt_tot', 'PRI_tau_pt'
 
 # ValueError: Input 0 of layer "sequential_30" is incompatible with the layer: expected shape=(None, 30), found shape=(None, 2)
